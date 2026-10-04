@@ -87,7 +87,8 @@ def build_html(content: dict) -> str:
     body = ""
 
     # Perfil
-    profile = (content.get("profile") or {}).get("text", "")
+    profile_val = content.get("profile")
+    profile = profile_val.get("text", "") if isinstance(profile_val, dict) else (profile_val or "")
     if shown("profile") and _tem(profile):
         body += _section("Perfil Profissional", f'<p class="para">{esc(profile)}</p>')
 

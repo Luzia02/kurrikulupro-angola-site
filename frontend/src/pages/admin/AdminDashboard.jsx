@@ -270,7 +270,7 @@ function ProfessionsTab() {
             <option value="">Família…</option>
             {data.families.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
           </select>
-          <button data-testid="prof-add" onClick={add} className="rounded-xl bg-[#2563EB] text-white font-semibold text-sm">Adicionar</button>
+          <button data-testid="prof-add" onClick={add} disabled={!form.name.trim() || !form.family} className="rounded-xl bg-[#2563EB] text-white font-semibold text-sm disabled:opacity-50">Adicionar</button>
         </div>
       </div>
       <div className="bg-white rounded-2xl border border-slate-200 p-5">
