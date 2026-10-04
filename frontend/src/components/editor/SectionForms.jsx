@@ -57,6 +57,9 @@ export function PersonalForm({ content, set }) {
       <Field label="Telefone / WhatsApp" value={p.phone} onChange={(v) => upd("phone", v)} testid="input-phone" placeholder="+244 9XX XXX XXX" />
       <Field label="Cidade / Município" value={p.city} onChange={(v) => upd("city", v)} testid="input-city" placeholder="Ex.: Luanda" />
       <Field label="E-mail" value={p.email} onChange={(v) => upd("email", v)} testid="input-email" placeholder="nome@email.com" optional />
+      <Field label="LinkedIn" value={p.linkedin} onChange={(v) => upd("linkedin", v)} testid="input-linkedin" placeholder="linkedin.com/in/o-seu-nome" optional />
+      <Field label="Portefólio / site" value={p.portfolio} onChange={(v) => upd("portfolio", v)} testid="input-portfolio" placeholder="Ex.: behance.net/nome ou o seu site" optional />
+      <p className="sm:col-span-2 text-xs text-slate-500">Os links aparecem na linha de contactos do currículo, sem “https://”.</p>
     </div>
   );
 }

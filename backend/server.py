@@ -120,6 +120,15 @@ class ProfileBody(BaseModel):
     content: dict
 
 
+class ResumePinBody(BaseModel):
+    pin: str
+
+
+class ResumeBody(BaseModel):
+    code: str
+    pin: str
+
+
 class OrderCreate(BaseModel):
     draft_token: str
 
@@ -193,7 +202,82 @@ async def update_draft(token: str, body: DraftBody):
 @api.delete("/drafts/{token}")
 async def delete_draft(token: str):
     await db.drafts.delete_one({"token": token})
+    await db.resume_codes.delete_many({"draft_token": token})
     return {"ok": True}
+
+
+# ---------------------------------------------------------------- retomar rascunho (código + PIN)
+RESUME_MAX_ATTEMPTS = 5
+RESUME_LOCK_MINUTES = 15
+RESUME_DAYS = 30
+
+
+def _valid_pin(pin: str) -> bool:
+    return bool(re.fullmatch(r"\d{4}", pin or ""))
+
+
+@api.post("/drafts/{token}/resume-code")
+async def create_resume_code(token: str, body: ResumePinBody):
+    if not _valid_pin(body.pin):
+        raise HTTPException(400, "O PIN deve ter exactamente 4 dígitos.")
+    if not await db.drafts.find_one({"token": token}, {"_id": 1}):
+        raise HTTPException(404, "Rascunho não encontrado")
+    await db.resume_codes.delete_many({"draft_token": token})
+    code = "KP-" + "".join(random.choices("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", k=6))
+    while await db.resume_codes.find_one({"code": code}):
+        code = "KP-" + "".join(random.choices("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", k=6))
+    expires = datetime.now(timezone.utc) + timedelta(days=RESUME_DAYS)
+    await db.resume_codes.insert_one({
+        "code": code, "draft_token": token, "pin_hash": hash_password(body.pin),
+        "attempts": 0, "locked_until": None, "expires_at": expires, "created_at": now_iso(),
+    })
+    return {"code": code, "expires_at": expires.isoformat()}
+
+
+@api.get("/drafts/{token}/resume-code")
+async def get_resume_code(token: str):
+    r = await db.resume_codes.find_one({"draft_token": token})
+    if not r or r["expires_at"].replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+        return {"code": None}
+    return {"code": r["code"], "expires_at": r["expires_at"].replace(tzinfo=timezone.utc).isoformat()}
+
+
+@api.delete("/drafts/{token}/resume-code")
+async def revoke_resume_code(token: str):
+    await db.resume_codes.delete_many({"draft_token": token})
+    return {"ok": True}
+
+
+@api.post("/drafts/resume")
+async def resume_draft(body: ResumeBody):
+    code = body.code.strip().upper()
+    if not code.startswith("KP-"):
+        code = "KP-" + code
+    generic = HTTPException(401, "Código ou PIN incorrectos.")
+    r = await db.resume_codes.find_one({"code": code})
+    if not r:
+        raise generic
+    now = datetime.now(timezone.utc)
+    if r["expires_at"].replace(tzinfo=timezone.utc) < now:
+        await db.resume_codes.delete_one({"_id": r["_id"]})
+        raise HTTPException(410, "Este código expirou. Gere um novo código no editor.")
+    lu = r.get("locked_until")
+    if lu and lu.replace(tzinfo=timezone.utc) > now:
+        mins = int((lu.replace(tzinfo=timezone.utc) - now).total_seconds() // 60) + 1
+        raise HTTPException(429, f"Demasiadas tentativas. Tente novamente dentro de {mins} min.")
+    if not _valid_pin(body.pin) or not verify_password(body.pin, r["pin_hash"]):
+        attempts = r.get("attempts", 0) + 1
+        upd = {"attempts": attempts}
+        if attempts >= RESUME_MAX_ATTEMPTS:
+            upd = {"attempts": 0, "locked_until": now + timedelta(minutes=RESUME_LOCK_MINUTES)}
+            await db.resume_codes.update_one({"_id": r["_id"]}, {"$set": upd})
+            raise HTTPException(429, f"Demasiadas tentativas. Bloqueado por {RESUME_LOCK_MINUTES} min.")
+        await db.resume_codes.update_one({"_id": r["_id"]}, {"$set": upd})
+        raise generic
+    await db.resume_codes.update_one({"_id": r["_id"]}, {"$set": {"attempts": 0, "locked_until": None}})
+    if not await db.drafts.find_one({"token": r["draft_token"]}, {"_id": 1}):
+        raise HTTPException(404, "O rascunho já não existe.")
+    return {"token": r["draft_token"]}
 
 
 # ---------------------------------------------------------------- professions
@@ -556,6 +640,8 @@ async def startup():
     await db.drafts.create_index("token", unique=True)
     await db.orders.create_index("order_code", unique=True)
     await db.professions.create_index("id", unique=True)
+    await db.resume_codes.create_index("code", unique=True)
+    await db.resume_codes.create_index("expires_at", expireAfterSeconds=0)
 
     # seed admin
     email = os.environ["ADMIN_EMAIL"].strip().lower()

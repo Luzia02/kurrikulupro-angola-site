@@ -9,6 +9,7 @@ import Editor from "@/pages/Editor";
 import Review from "@/pages/Review";
 import Payment from "@/pages/Payment";
 import OrderStatus from "@/pages/OrderStatus";
+import Resume from "@/pages/Resume";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import NotFound from "@/pages/NotFound";
@@ -28,6 +29,7 @@ function App() {
           <Route path="/pagamento/:code" element={<Payment />} />
           <Route path="/pedido" element={<OrderStatus />} />
           <Route path="/pedido/:code" element={<OrderStatus />} />
+          <Route path="/retomar" element={<Resume />} />
           <Route path="/privacidade" element={<Privacy />} />
           <Route path="/termos" element={<Terms />} />
           <Route path="/admin/login" element={<AdminLogin />} />

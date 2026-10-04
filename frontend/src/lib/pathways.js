@@ -109,7 +109,7 @@ export function defaultContent(pathway) {
     pathway,
     adapt: pathway === "procurar_emprego" ? null : "no",
     target_profession: null,
-    personal: { first_name: "", last_name: "", phone: "", city: "", email: "", photo_url: "", links: [] },
+    personal: { first_name: "", last_name: "", phone: "", city: "", email: "", linkedin: "", portfolio: "", photo_url: "", links: [] },
     profile: { text: "", edited: false, generated: false },
     experiences: [],
     education: [],

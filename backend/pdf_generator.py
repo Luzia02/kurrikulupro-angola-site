@@ -82,6 +82,9 @@ def build_html(content: dict) -> str:
         contactos.append(esc(personal["phone"]))
     if _tem(personal.get("email")):
         contactos.append(esc(personal["email"]))
+    for key in ("linkedin", "portfolio"):
+        if _tem(personal.get(key)):
+            contactos.append(esc(re.sub(r"^https?://(www\.)?", "", personal[key].strip()).rstrip("/")))
     contacto_line = "&nbsp;&nbsp;|&nbsp;&nbsp;".join(contactos)
 
     body = ""

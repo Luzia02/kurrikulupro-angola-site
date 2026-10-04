@@ -28,7 +28,8 @@ export default function CVPreview({ content, watermark = true }) {
   const target = content.target_profession || {};
   const titulo = tem(target.name) ? target.name : "";
 
-  const contactos = [p.city, p.phone, p.email].filter(tem);
+  const shortUrl = (u) => String(u).trim().replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+  const contactos = [p.city, p.phone, p.email].filter(tem).concat([p.linkedin, p.portfolio].filter(tem).map(shortUrl));
 
   const exps = (content.experiences || []).filter((e) => tem(e.role));
   const edus = (content.education || []).filter((e) => tem(e.course) || tem(e.level));

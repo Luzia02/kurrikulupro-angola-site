@@ -57,6 +57,9 @@ export default function Home() {
                   Continuar o meu rascunho
                 </button>
               )}
+              <Link to="/retomar" data-testid="hero-resume-code-link" className="px-6 py-3.5 rounded-full text-[#2563EB] font-semibold hover:underline">
+                Tenho um código de rascunho
+              </Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-600">
               <span className="flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-[#059669]" /> Sem dados inventados</span>

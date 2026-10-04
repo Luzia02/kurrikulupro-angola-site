@@ -10,7 +10,8 @@ import {
   DomesticForm, ServicesForm, AdaptForm, ReferencesForm,
 } from "../components/editor/SectionForms";
 import { toast } from "sonner";
-import { Eye, PencilLine, Check, Loader2 } from "lucide-react";
+import { Eye, PencilLine, Check, Loader2, Smartphone } from "lucide-react";
+import { ResumeCodeDialog } from "../components/editor/ResumeCodeDialog";
 
 export default function Editor() {
   const { token } = useParams();
@@ -21,6 +22,7 @@ export default function Editor() {
   const [activeTab, setActiveTab] = useState(0);
   const [mobileView, setMobileView] = useState("edit");
   const [saveState, setSaveState] = useState("saved");
+  const [showResume, setShowResume] = useState(false);
   const saveTimer = useRef(null);
   const firstLoad = useRef(true);
 
@@ -112,6 +114,9 @@ export default function Editor() {
             <h1 className="font-head text-2xl font-extrabold text-[#1C2D42]">Criador de currículo</h1>
           </div>
           <div className="flex items-center gap-3 text-sm text-slate-500" data-testid="save-state">
+            <button data-testid="resume-code-open" onClick={() => setShowResume(true)} className="flex items-center gap-1 text-[#2563EB] font-semibold hover:underline">
+              <Smartphone className="w-4 h-4" /> <span className="hidden sm:inline">Continuar noutro telemóvel</span><span className="sm:hidden">Código</span>
+            </button>
             {saveState === "saving" && <span className="flex items-center gap-1"><Loader2 className="w-4 h-4 animate-spin" /> A guardar…</span>}
             {saveState === "saved" && <span className="flex items-center gap-1 text-[#059669]"><Check className="w-4 h-4" /> Guardado</span>}
             {saveState === "error" && <span className="text-red-500">Erro ao guardar</span>}
@@ -179,6 +184,7 @@ export default function Editor() {
           </div>
         </div>
       </div>
+      {showResume && <ResumeCodeDialog token={token} onClose={() => setShowResume(false)} />}
     </Layout>
   );
 }

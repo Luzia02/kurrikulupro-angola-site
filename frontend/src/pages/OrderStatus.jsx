@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { api, errMsg } from "../lib/api";
 import { toast } from "sonner";
-import { Loader2, Download, Clock, CheckCircle2, XCircle, FileSearch } from "lucide-react";
+import { Loader2, Download, Clock, CheckCircle2, XCircle, FileSearch, MessageCircle } from "lucide-react";
+
+const WA_TEXT = "Bom dia. Envio em anexo o meu currículo para a vossa apreciação. Fico disponível para qualquer esclarecimento ou entrevista. Com os melhores cumprimentos.";
 
 const STATUS_INFO = {
   aguarda_pagamento: { label: "Aguarda pagamento", color: "text-amber-600", bg: "bg-amber-50 border-amber-200", icon: Clock },
@@ -94,6 +96,11 @@ export default function OrderStatus() {
               {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Descarregar PDF
             </button>
             <button onClick={() => window.print()} className="mt-3 w-full px-6 py-3 rounded-full border border-slate-300 text-[#1C2D42] font-semibold" data-testid="print-btn">Imprimir / partilhar</button>
+            <a data-testid="whatsapp-share-btn" href={`https://wa.me/?text=${encodeURIComponent(WA_TEXT)}`} target="_blank" rel="noreferrer"
+              className="mt-3 w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#059669] text-[#059669] font-semibold">
+              <MessageCircle className="w-4 h-4" /> Enviar por WhatsApp a um empregador
+            </a>
+            <p className="text-xs text-slate-500 mt-2">Abre o WhatsApp com uma mensagem sugerida para escolher o contacto. Descarregue primeiro o PDF e anexe-o na conversa — nada é enviado automaticamente.</p>
           </div>
         ) : (
           <div className="mt-5 bg-white rounded-2xl border border-slate-200 p-5 text-sm text-slate-600">
