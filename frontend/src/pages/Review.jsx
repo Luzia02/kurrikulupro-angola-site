@@ -14,6 +14,7 @@ const SECTIONS = [
   ["courses", "Cursos"],
   ["languages", "Idiomas"],
   ["projects", "Projectos"],
+  ["references", "Referências"],
   ["availability", "Disponibilidade"],
 ];
 
@@ -27,6 +28,11 @@ function hasData(content, key) {
     case "languages": return (content.languages || []).some((l) => (l.language || "").trim());
     case "projects": return (content.projects || []).some((p) => (p.name || "").trim());
     case "availability": { const d = content.availability || {}; return !!(d.type || d.note || d.zone); }
+    case "references": {
+      const r = content.references || {};
+      if (r.mode === "on_request") return true;
+      return r.mode === "list" && (r.items || []).some((x) => x && x.consent === true && (x.name || "").trim());
+    }
     default: return false;
   }
 }

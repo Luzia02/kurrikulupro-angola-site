@@ -406,20 +406,87 @@ export function ServicesForm({ content, set }) {
   );
 }
 
+// ---------------- Referências (opcional, com consentimento)
+const REF_MODES = [
+  ["none", "Não incluir referências", "O currículo não terá secção de referências."],
+  ["on_request", "“Referências disponíveis mediante pedido”", "Mostra apenas esta frase, sem nomes nem contactos."],
+  ["list", "Indicar referências", "Nome, cargo, empresa e contacto — só com autorização da pessoa."],
+];
+const emptyRef = () => ({ name: "", role: "", company: "", phone: "", email: "", consent: false });
+
+export function ReferencesForm({ content, set }) {
+  const refs = content.references || { mode: "none", items: [] };
+  const items = refs.items || [];
+  const setRefs = (next) => set({ ...content, references: { ...refs, ...next } });
+  const update = (i, k, v) => { const n = [...items]; n[i] = { ...n[i], [k]: v }; setRefs({ items: n }); };
+  const remove = (i) => setRefs({ items: items.filter((_, j) => j !== i) });
+  const toggleConsent = (i, checked) => {
+    const n = [...items];
+    n[i] = checked ? { ...n[i], consent: true } : { ...emptyRef() };
+    setRefs({ items: n });
+  };
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-slate-600">Secção opcional — não impede a criação do currículo. Só recolhemos e mostramos dados de outra pessoa com a sua autorização.</p>
+      <div className="space-y-2">
+        {REF_MODES.map(([v, l, d]) => (
+          <button key={v} data-testid={`ref-mode-${v}`} onClick={() => setRefs({ mode: v })}
+            className={`w-full text-left rounded-xl border px-4 py-3 ${refs.mode === v ? "border-[#2563EB] bg-[#EFF6FF]" : "border-slate-300 bg-white"}`}>
+            <span className="font-semibold text-[#1C2D42] block">{l}</span>
+            <span className="text-xs text-slate-500">{d}</span>
+          </button>
+        ))}
+      </div>
+      {refs.mode === "list" && (
+        <div className="space-y-4">
+          {items.map((r, i) => (
+            <EntryCard key={i} onRemove={() => remove(i)} testid={`remove-ref-${i}`}>
+              <label className="flex items-start gap-2 text-sm font-medium text-slate-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
+                <input type="checkbox" data-testid={`ref-consent-${i}`} className="mt-0.5" checked={!!r.consent} onChange={(e) => toggleConsent(i, e.target.checked)} />
+                Tenho autorização desta pessoa para partilhar estes dados
+              </label>
+              {r.consent ? (
+                <>
+                  <Field label="Nome" value={r.name} onChange={(v) => update(i, "name", v)} testid={`ref-name-${i}`} placeholder="Ex.: Maria João" />
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <Field label="Cargo / relação" value={r.role} onChange={(v) => update(i, "role", v)} testid={`ref-role-${i}`} placeholder="Ex.: Supervisora, antiga empregadora" />
+                    <Field label="Empresa / entidade" value={r.company} onChange={(v) => update(i, "company", v)} testid={`ref-company-${i}`} optional />
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <Field label="Telefone" value={r.phone} onChange={(v) => update(i, "phone", v)} testid={`ref-phone-${i}`} optional placeholder="+244 9XX XXX XXX" />
+                    <Field label="E-mail" value={r.email} onChange={(v) => update(i, "email", v)} testid={`ref-email-${i}`} optional />
+                  </div>
+                </>
+              ) : (
+                <p className="text-xs text-slate-500" data-testid={`ref-locked-${i}`}>Confirme a autorização para preencher os dados desta referência. Sem autorização, nada é guardado nem mostrado.</p>
+              )}
+            </EntryCard>
+          ))}
+          <AddButton onClick={() => setRefs({ items: [...items, emptyRef()] })} label="Adicionar referência" testid="add-reference" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ---------------- Adaptar a uma vaga (procurar_emprego)
 export function AdaptForm({ content, set }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [searched, setSearched] = useState(false);
   const [other, setOther] = useState("");
   const timer = useRef(null);
 
   useEffect(() => {
-    if (content.adapt !== "yes" || !query.trim()) { setResults([]); return; }
+    if (content.adapt !== "yes" || !query.trim()) { setResults([]); setSuggestions([]); setSearched(false); return; }
     clearTimeout(timer.current);
     timer.current = setTimeout(async () => {
       try {
         const { data } = await api.get(`/professions?search=${encodeURIComponent(query)}`);
         setResults(data.professions.slice(0, 12));
+        setSuggestions(data.suggestions || []);
+        setSearched(true);
       } catch { /* ignore */ }
     }, 300);
   }, [query, content.adapt]);
@@ -461,6 +528,19 @@ export function AdaptForm({ content, set }) {
                       <span className="font-medium text-slate-800">{p.name}</span>
                     </button>
                   ))}
+                </div>
+              )}
+              {searched && results.length === 0 && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-3" data-testid="adapt-no-match">
+                  <p className="text-sm text-amber-800">Não encontrámos “{query}” no catálogo.{suggestions.length > 0 ? " Talvez queira dizer:" : " Pode escrever a profissão em baixo."}</p>
+                  {suggestions.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {suggestions.map((p) => (
+                        <button key={p.id} data-testid={`adapt-suggest-${p.id}`} onClick={() => chooseProf(p)}
+                          className="px-3 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 text-sm hover:border-[#2563EB]">{p.name}</button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
               <div className="flex gap-2 pt-1">

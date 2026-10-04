@@ -10,6 +10,8 @@ import secrets
 import string
 import random
 import re
+import difflib
+import unicodedata
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List, Annotated
 
@@ -147,12 +149,29 @@ def gen_order_code() -> str:
 
 
 # ---------------------------------------------------------------- draft endpoints
+def sanitize_references(content: dict) -> dict:
+    refs = content.get("references")
+    if not isinstance(refs, dict):
+        return content
+    items = []
+    for r in refs.get("items") or []:
+        if not isinstance(r, dict):
+            continue
+        if r.get("consent") is True:
+            items.append(r)
+        else:
+            items.append({"name": "", "role": "", "company": "", "phone": "", "email": "", "consent": False})
+    content["references"] = {"mode": refs.get("mode", "none"), "items": items}
+    return content
+
+
 @api.post("/drafts")
 async def create_draft(body: DraftBody):
     token = secrets.token_urlsafe(24)
-    doc = {"token": token, "content": body.content, "created_at": now_iso(), "updated_at": now_iso()}
+    content = sanitize_references(body.content)
+    doc = {"token": token, "content": content, "created_at": now_iso(), "updated_at": now_iso()}
     await db.drafts.insert_one(doc)
-    return {"token": token, "content": body.content}
+    return {"token": token, "content": content}
 
 
 @api.get("/drafts/{token}")
@@ -165,7 +184,7 @@ async def get_draft(token: str):
 
 @api.put("/drafts/{token}")
 async def update_draft(token: str, body: DraftBody):
-    res = await db.drafts.update_one({"token": token}, {"$set": {"content": body.content, "updated_at": now_iso()}})
+    res = await db.drafts.update_one({"token": token}, {"$set": {"content": sanitize_references(body.content), "updated_at": now_iso()}})
     if res.matched_count == 0:
         raise HTTPException(404, "Rascunho não encontrado")
     return {"ok": True}
@@ -178,20 +197,52 @@ async def delete_draft(token: str):
 
 
 # ---------------------------------------------------------------- professions
+def _norm(s: str) -> str:
+    s = unicodedata.normalize("NFKD", str(s or "").lower())
+    return "".join(c for c in s if not unicodedata.combining(c))
+
+
+def _similar_professions(s: str, docs: list, limit: int = 8) -> list:
+    tokens = [t for t in re.split(r"\W+", s) if len(t) >= 3]
+    scored = []
+    for p in docs:
+        terms = [p.get("name", "")] + p.get("aliases", []) + [FAMILY_NAMES.get(p.get("family"), "")]
+        best = 0.0
+        for term in terms:
+            nt = _norm(term)
+            if not nt:
+                continue
+            best = max(best, difflib.SequenceMatcher(None, s, nt).ratio())
+            for w in re.split(r"\W+", nt):
+                if len(w) >= 3:
+                    best = max(best, difflib.SequenceMatcher(None, s, w).ratio())
+                    for tok in tokens:
+                        if tok in w or w in tok or difflib.SequenceMatcher(None, tok, w).ratio() >= 0.8:
+                            best = max(best, 0.75)
+        if best >= 0.65:
+            scored.append((best, p))
+    scored.sort(key=lambda x: (-x[0], x[1].get("name", "")))
+    return [p for _, p in scored[:limit]]
+
+
 @api.get("/professions")
 async def list_professions(search: str = "", family: str = ""):
     query = {"status": "published"}
     if family:
         query["family"] = family
     docs = await db.professions.find(query, {"_id": 0}).to_list(2000)
+    suggestions = []
     if search:
-        s = search.strip().lower()
+        s = _norm(search.strip())
         def match(p):
-            hay = " ".join([p.get("name", "")] + p.get("aliases", []) + [p.get("family", "")]).lower()
+            hay = _norm(" ".join([p.get("name", "")] + p.get("aliases", []) + [FAMILY_NAMES.get(p.get("family"), "")]))
             return s in hay
-        docs = [p for p in docs if match(p)]
+        exact = [p for p in docs if match(p)]
+        if not exact:
+            suggestions = _similar_professions(s, docs)
+        docs = exact
     docs.sort(key=lambda p: p.get("name", ""))
-    return {"families": [{"id": fid, "name": name} for fid, name in FAMILIES], "professions": docs}
+    return {"families": [{"id": fid, "name": name} for fid, name in FAMILIES], "professions": docs, "suggestions": suggestions}
 
 
 @api.get("/professions/{pid}")

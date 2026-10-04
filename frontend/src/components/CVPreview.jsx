@@ -38,6 +38,8 @@ export default function CVPreview({ content, watermark = true }) {
   const projs = (content.projects || []).filter((pr) => tem(pr.name));
   const profile = (content.profile || {}).text || "";
   const disp = content.availability || {};
+  const refs = content.references || {};
+  const refItems = refs.mode === "list" ? (refs.items || []).filter((r) => r && r.consent === true && tem(r.name)) : [];
 
   return (
     <div className="cv-sheet" data-testid="cv-preview">
@@ -149,6 +151,27 @@ export default function CVPreview({ content, watermark = true }) {
       {shown("availability") && (tem(disp.type) || tem(disp.note) || tem(disp.zone)) && (
         <Section title="Disponibilidade">
           <p className="cv-para">{[disp.type, disp.zone, disp.note].filter(tem).join(" · ")}</p>
+        </Section>
+      )}
+
+      {shown("references") && refs.mode === "on_request" && (
+        <Section title="Referências">
+          <p className="cv-para" data-testid="cv-refs-on-request">Referências disponíveis mediante pedido.</p>
+        </Section>
+      )}
+      {shown("references") && refItems.length > 0 && (
+        <Section title="Referências">
+          {refItems.map((r, i) => {
+            const sub = [r.role, r.company].filter(tem).join(" · ");
+            const cont = [r.phone, r.email].filter(tem).join(" · ");
+            return (
+              <div className="cv-item" key={i} data-testid={`cv-ref-${i}`}>
+                <div className="cv-item-role">{r.name}</div>
+                {sub && <div className="cv-item-sub">{sub}</div>}
+                {cont && <div className="cv-item-sub">{cont}</div>}
+              </div>
+            );
+          })}
         </Section>
       )}
     </div>

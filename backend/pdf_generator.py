@@ -177,6 +177,26 @@ def build_html(content: dict) -> str:
         partes = " · ".join([x for x in [esc(disp.get("type")), esc(disp.get("zone")), esc(disp.get("note"))] if x])
         body += _section("Disponibilidade", f'<p class="para">{partes}</p>')
 
+    # Referências (só com consentimento)
+    refs = content.get("references") or {}
+    if shown("references"):
+        if refs.get("mode") == "on_request":
+            body += _section("Referências", '<p class="para">Referências disponíveis mediante pedido.</p>')
+        elif refs.get("mode") == "list":
+            itens = [r for r in (refs.get("items") or []) if isinstance(r, dict) and r.get("consent") is True and _tem(r.get("name"))]
+            inner = ""
+            for r in itens:
+                sub = " · ".join([x for x in [esc(r.get("role")), esc(r.get("company"))] if x])
+                cont = " · ".join([x for x in [esc(r.get("phone")), esc(r.get("email"))] if x])
+                inner += f"""
+            <div class="item">
+              <div class="item-role">{esc(r.get('name'))}</div>
+              {f'<div class="item-sub">{sub}</div>' if sub else ''}
+              {f'<div class="item-sub">{cont}</div>' if cont else ''}
+            </div>"""
+            if inner:
+                body += _section("Referências", inner)
+
     html_doc = f"""<!DOCTYPE html>
 <html lang="pt"><head><meta charset="utf-8"><style>
 @page {{ size: A4; margin: 16mm 15mm; }}

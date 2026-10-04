@@ -7,7 +7,7 @@ import { PATHWAY_TABS, TAB_LABELS, PATHWAY_LABELS } from "../lib/pathways";
 import {
   PersonalForm, ProfileForm, ExperienceForm, EducationForm, SkillsForm,
   CoursesForm, LanguagesForm, ProjectsForm, AvailabilityForm, CareForm,
-  DomesticForm, ServicesForm, AdaptForm,
+  DomesticForm, ServicesForm, AdaptForm, ReferencesForm,
 } from "../components/editor/SectionForms";
 import { toast } from "sonner";
 import { Eye, PencilLine, Check, Loader2 } from "lucide-react";
@@ -91,6 +91,7 @@ export default function Editor() {
       case "care": return <CareForm content={content} set={set} />;
       case "domestic": return <DomesticForm content={content} set={set} />;
       case "services": return <ServicesForm content={content} set={set} />;
+      case "references": return <ReferencesForm content={content} set={set} />;
       default: return null;
     }
   };

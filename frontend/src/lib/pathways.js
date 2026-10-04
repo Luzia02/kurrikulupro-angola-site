@@ -50,11 +50,11 @@ export const PATHWAY_LABELS = Object.fromEntries(PATHWAYS.map((p) => [p.id, p.ti
 
 // Separadores por percurso
 export const PATHWAY_TABS = {
-  procurar_emprego: ["adapt", "personal", "profile", "experience", "education", "skills", "courses", "languages", "projects", "availability"],
-  curriculo_pessoal: ["personal", "profile", "education", "experience", "skills", "courses", "languages", "projects", "availability"],
-  prestar_servicos: ["personal", "profile", "services", "experience", "skills", "courses", "availability"],
-  baba_cuidador: ["personal", "profile", "care", "experience", "skills", "courses", "availability"],
-  trabalhar_casa: ["personal", "profile", "domestic", "experience", "skills", "courses", "availability"],
+  procurar_emprego: ["adapt", "personal", "profile", "experience", "education", "skills", "courses", "languages", "projects", "references", "availability"],
+  curriculo_pessoal: ["personal", "profile", "education", "experience", "skills", "courses", "languages", "projects", "references", "availability"],
+  prestar_servicos: ["personal", "profile", "services", "experience", "skills", "courses", "references", "availability"],
+  baba_cuidador: ["personal", "profile", "care", "experience", "skills", "courses", "references", "availability"],
+  trabalhar_casa: ["personal", "profile", "domestic", "experience", "skills", "courses", "references", "availability"],
 };
 
 export const TAB_LABELS = {
@@ -70,6 +70,7 @@ export const TAB_LABELS = {
   care: "Cuidados",
   domestic: "Tarefas da casa",
   services: "Serviço",
+  references: "Referências",
   availability: "Disponibilidade",
 };
 
@@ -120,6 +121,7 @@ export function defaultContent(pathway) {
     domestic_details: { context: "", schedule: "", live_in: "", zone: "" },
     services_details: { service: "", clients: "", area: "", zone: "", duration: "", portfolio: "", references: "" },
     availability: { type: "", zone: "", note: "" },
+    references: { mode: "none", items: [] },
     driving_license: "",
     section_visibility: {},
   };
