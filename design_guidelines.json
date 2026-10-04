@@ -1,0 +1,157 @@
+{
+  "project_name": "KurrikuluPro Angola",
+  "app_type": "hybrid_fullstack",
+  "locale": "pt-AO",
+  "design_philosophy": {
+    "core_principles": [
+      "Confiança e Dignidade: Design sóbrio, limpo e profissional focado na valorização de todo o tipo de trabalhador angolano",
+      "Mobile-First & Baixa LARGURA DE BANDA: Otimizado para telemóveis Android, ecrãs pequenos e ligações lentas com elementos leves e carregamento rápido",
+      "Acessibilidade Estrita: Altura de toque mínima de 48px, contraste AA (APCA superado), foco bem visível e navegação simples sem jargão técnico",
+      "Transparência Visual: Fluxo de pagamento claro (900 Kz) com marca de água visível de pré-visualização até aprovação no painel administrativo"
+    ],
+    "identity": "Sóbria e acolhedora com paleta Azul-Marinho (Navy), Azul Royal e apontamentos discretos em Verde Esmeralda e Dourado Angola. Transmite credibilidade de nível empresarial com a simplicidade que o público local necessita."
+  },
+  "typography": {
+    "font_family_heading": "Plus Jakarta Sans, system-ui, sans-serif",
+    "font_family_body": "Inter, system-ui, sans-serif",
+    "font_family_mono": "JetBrains Mono, monospace",
+    "font_family_cv": "Arial, Helvetica, sans-serif (Universal A4 PDF/Print standard)",
+    "scale": {
+      "h1": "text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white",
+      "h2": "text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100",
+      "h3": "text-xl sm:text-2xl font-medium text-slate-800 dark:text-slate-200",
+      "h4": "text-lg sm:text-xl font-medium text-slate-800 dark:text-slate-200",
+      "body": "text-base text-slate-700 dark:text-slate-300 leading-relaxed",
+      "caption": "text-xs sm:text-sm text-slate-500 dark:text-slate-400"
+    }
+  },
+  "colors": {
+    "brand": {
+      "navy_dark": "#0B132B",
+      "navy_primary": "#1C2D42",
+      "blue_royal": "#2563EB",
+      "blue_light": "#EFF6FF",
+      "accent_gold": "#D97706",
+      "accent_emerald": "#059669",
+      "border": "#E2E8F0"
+    },
+    "web_palette": {
+      "background": "#F8FAFC",
+      "surface": "#FFFFFF",
+      "surface_dark": "#0F172A",
+      "text_main": "#1E293B",
+      "text_muted": "#64748B",
+      "primary_button": "#1C2D42",
+      "primary_button_hover": "#0B132B",
+      "accent_button": "#2563EB"
+    },
+    "cv_template_proposta_02": {
+      "header_navy": "#1C2D42",
+      "section_title": "#1C2D42",
+      "rule_line": "#CBD5E1",
+      "body_text": "#334155",
+      "meta_text": "#64748B",
+      "pill_bg": "#F1F5F9",
+      "pill_text": "#1E293B",
+      "pill_border": "#CBD5E1",
+      "accent_bar": "#D97706",
+      "watermark": "rgba(220, 38, 38, 0.18)"
+    }
+  },
+  "a4_cv_template_specifications": {
+    "name": "Proposta 02 - Sóbrio Angola Pro",
+    "layout": "Coluna única principal com cabeçalho limpo, hierarquia nítida, linhas divisórias finas e bom espaço em branco",
+    "header_structure": {
+      "name": "Nome Completo em caixa alta ou semi-negrito (22pt - 24pt, Navy #1C2D42)",
+      "profession_title": "Título/Profissão Principal (13pt - 14pt, Azul Royal #2563EB ou Dourado #D97706)",
+      "contact_grid": "Grid compacto de contactos (Telefone/WhatsApp, Email, Província/Município - Luanda, Bairro, Condução, Disponibilidade)"
+    },
+    "section_styling": {
+      "titles": "CAIXA ALTA (UPPERCASE) com traço horizontal fino de separação (border-b 1px #CBD5E1)",
+      "margin_bottom": "mb-4 para separação respirável de secções",
+      "experience_item": "Cargo em negrito, Nome da Empresa/Casa/Local, Período à direita e lista com marcadores (bullet points) claros das responsabilidades",
+      "skills_style": "Pill-shaped badges (rounded-full px-3 py-1 bg-slate-100 text-slate-800 border border-slate-300 text-xs font-medium inline-block mr-2 mb-2)"
+    },
+    "watermark": {
+      "text": "PRÉ-VISUALIZAÇÃO — PAGAMENTO PENDENTE",
+      "style": "Diagonal 45deg, texto repetiu ou centralizado em caixa alta vermelho/translúcido com pointer-events-none e user-select-none"
+    }
+  },
+  "six_entry_pathways": [
+    {
+      "id": "procurar_emprego",
+      "title": "Procurar Primeiro Emprego / Geral",
+      "description": "Ideal para estudantes, jovens e quem procura vaga em empresas, escritórios ou lojas.",
+      "badge": "Mais Escolhido",
+      "icon": "Briefcase"
+    },
+    {
+      "id": "curriculo_pessoal",
+      "title": "Currículo Profissional Geral",
+      "description": "Para quem já tem experiência e quer atualizar o currículo para novas oportunidades.",
+      "badge": "Profissional",
+      "icon": "FileText"
+    },
+    {
+      "id": "prestar_servicos",
+      "title": "Prestar Serviços (Técnico / Freelancer)",
+      "description": "Eletricista, canalizador, pedreiro, mecânico, motorista, pintor ou técnico de informática.",
+      "badge": "Técnicos & Ofícios",
+      "icon": "Wrench"
+    },
+    {
+      "id": "baba_cuidador",
+      "title": "Babá ou Cuidador(a) de Idosos",
+      "description": "Com foco em paciência, recomendações, primeiros socorros, tarefas e afeto.",
+      "badge": "Cuidado & Saúde",
+      "icon": "Heart"
+    },
+    {
+      "id": "trabalhar_casa",
+      "title": "Trabalho Doméstico / Cozinha / Limpeza",
+      "description": "Empregada doméstica, cozinheira, engomadeira, arrumadeira ou caseiro.",
+      "badge": "Serviço Doméstico",
+      "icon": "Home"
+    },
+    {
+      "id": "nao_sei_escolher",
+      "title": "Não sei qual escolher (Assistente Simples)",
+      "description": "Responda a poucas perguntas fáceis e nós escolhemos a melhor estrutura para si.",
+      "badge": "Guiado Passo a Passo",
+      "icon": "HelpCircle"
+    }
+  ],
+  "key_features_and_views": [
+    "Página Inicial Pública: Proposta de valor clara, 6 percursos em cartões responsivos, garantia de aceitação nas empresas em Angola, FAQ sanfona e notas de privacidade",
+    "Catálogo de Profissões Pesquisável: Mais de 80 profissões comuns em Angola com sugestões automáticas de tarefas e competências",
+    "Editor de Currículo Estruturado por Separadores: Dados Pessoais, Perfil, Experiência, Formação, Competências, Cursos, Idiomas, Projectos, Disponibilidade",
+    "Pré-visualização A4 Lado a Lado (Desktop) e Alternância Guia/Pré-visualizar (Mobile)",
+    "Página de Revisão de Secções: Validação final dos dados antes da submissão do pedido",
+    "Página de Pagamento Manual: Instruções para transferência Express/IBAN (900 Kz), código único do pedido, IBAN do Banco BAI/BFA/BIC e carregamento do comprovativo (imagem/PDF)",
+    "Página de Estado e Sucesso do Pedido: Acompanhamento do estado (Pendente, Aprovado, Rejeitado) e descarregamento do PDF final sem marca de água após aprovação",
+    "Painel Administrativo de Gestão de Pedidos: Visão geral dos pedidos recebidos, verificação de comprovativos enviados, aprovação/rejeição com 1 clique e libertação do PDF limpo"
+  ],
+  "image_urls": {
+    "worker_construction": "https://images.unsplash.com/photo-1787672357491-d43acdf974cb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwcHJvZmVzc2lvbmFsJTIwd29ya2VyJTIwc21pbGluZyUyMHBvcnRyYWl0fGVufDB8fHx8MTc5MTA3MjM0N3ww&ixlib=rb-4.1.0&q=85",
+    "worker_hardhat": "https://images.unsplash.com/photo-1688841747582-41097036109d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHw0fHxhZnJpY2FuJTIwcHJvZmVzc2lvbmFsJTIwd29ya2VyJTIwc21pbGluZyUyMHBvcnRyYWl0fGVufDB8fHx8MTc5MTA3MjM0N3ww&ixlib=rb-4.1.0&q=85",
+    "professional_executive": "https://images.unsplash.com/photo-1600679472868-eae382e28b34?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA6ODl8MHwxfHNlYXJjaHwyfHxhZnJpY2FuJTIwYnVzaW5lc3MlMjBwcm9mZXNzaW9uYWwlMjBzbWlsaW5nJTIwb2ZmaWNlfGVufDB8fHx8MTc5MTA3MjM1M3ww&ixlib=rb-4.1.0&q=85",
+    "professional_female_laptop": "https://images.unsplash.com/photo-1657449036184-4fb912035102?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA6ODl8MHwxfHNlYXJjaHwzfHxhZnJpY2FuJTIwYnVzaW5lc3MlMjBwcm9mZXNzaW9uYWwlMjBzbWlsaW5nJTIwb2ZmaWNlfGVufDB8fHx8MTc5MTA3MjM1M3ww&ixlib=rb-4.1.0&q=85",
+    "mobile_payment_concept": "https://images.unsplash.com/photo-1608286022625-bc07f7a21154?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHw0fHxtb2JpbGUlMjBwaG9uZSUyMGFwcCUyMHBheW1lbnQlMjByZWNlaXB0JTIwaGFuZHN8ZW58MHx8fHwxNzkxMDcyMzU0fDA&ixlib=rb-4.1.0&q=85",
+    "mobile_receipt_upload": "https://images.unsplash.com/photo-1556740714-a8395b3bf30f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwyfHxtb2JpbGUlMjBwaG9uZSUyMGFwcCUyMHBheW1lbnQlMjByZWNlaXB0JTIwaGFuZHN8ZW58MHx8fHwxNzkxMDcyMzU0fDA&ixlib=rb-4.1.0&q=85"
+  },
+  "instructions_to_main_agent": [
+    "Utilizar estritamente ficheiros JavaScript (.js e .jsx), garantindo compatibilidade total com o modelo do projeto.",
+    "Garantir suporte completo a telemóveis Android e ecrãs pequenos com botões largos, inputs com font-size >= 16px para evitar auto-zoom iOS/Android e margens de toque adequadas.",
+    "Toda a interface deve utilizar Português de Angola claro, respeitoso e acolhedor (ex: 'Pagar 900 Kz via Express', 'Baixar Currículo', 'Província / Município', 'Número do WhatsApp').",
+    "Implementar a pré-visualização A4 no ecran com fidelidade ao estilo 'Proposta 02': cabeçalho em navy, títulos em caixa alta com linha de separação fina, badges pill para competências e texto em coluna única.",
+    "Na pré-visualização A4 antes de aprovação do administrador, incluir obrigatoriamente a marca de água 'PRÉ-VISUALIZAÇÃO — PAGAMENTO PENDENTE'.",
+    "No painel administrativo (/admin), permitir visualizar o comprovativo enviado, aprovar o pedido de 900 Kz e remover automaticamente a marca de água para o utilizador poder descarregar/imprimir o PDF.",
+    "Incluir data-testid em TODOS os botões, campos de entrada, links, separadores e mensagens de erro para testes automatizados."
+  ],
+  "general_ui_ux_guidelines": {
+    "data_testid_convention": "Usar kebab-case baseado no papel do elemento (ex: data-testid='start-cv-button', data-testid='input-full-name', data-testid='upload-receipt-input', data-testid='approve-order-button')",
+    "toast_notifications": "Usar a biblioteca Sonner disponível em '/app/frontend/src/components/ui/sonner.jsx' para toas de sucesso, erro e carregamento",
+    "icons": "Usar Lucide Icons (lucide-react) para consistência visual e leveza de carregamento",
+    "modal_and_dropdown_bg": "NUNCA usar fundo 100% transparente em menus suspensos ou cabeçalhos fixos; utilizar sempre bg-white/90 ou bg-slate-900/90 com backdrop-blur-md"
+  }
+}

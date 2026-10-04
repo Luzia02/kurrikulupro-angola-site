@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy-dark: #0B132B;
+  --navy: #1C2D42;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  --gold: #D97706;
+  --emerald: #059669;
+  --rule: #CBD5E1;
+  --bg: #F4F6FA;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: #1E293B;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-head {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* evitar auto-zoom em Android/iOS */
+input, select, textarea { font-size: 16px; }
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 214 42% 18%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 214 95% 93%;
+    --accent-foreground: 214 42% 18%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --radius: 0.65rem;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+}
+
+/* ---------------- Folha A4 (Proposta 02) ---------------- */
+.cv-sheet {
+  background: #fff;
+  color: #334155;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 15mm;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(11, 19, 43, 0.14);
+}
+.cv-topbar { height: 5px; background: var(--navy); margin-bottom: 14px; }
+.cv-name { font-size: 22pt; font-weight: 800; color: var(--navy); letter-spacing: .5px; text-transform: uppercase; margin: 0; }
+.cv-title { font-size: 12pt; font-weight: 700; color: var(--blue); margin: 4px 0 0; }
+.cv-contacts { color: #64748B; font-size: 9.5pt; margin-top: 8px; padding-bottom: 10px; border-bottom: 2px solid var(--navy); }
+.cv-section { margin-top: 16px; }
+.cv-sec-title { font-size: 11pt; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: .6px; border-bottom: 1px solid var(--rule); padding-bottom: 4px; margin-bottom: 8px; }
+.cv-para { margin: 0; text-align: justify; }
+.cv-item { margin-bottom: 10px; }
+.cv-item-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.cv-item-role { font-weight: 700; color: var(--navy); font-size: 10.5pt; }
+.cv-item-period { color: #64748B; font-size: 9pt; white-space: nowrap; }
+.cv-item-sub { color: #64748B; font-size: 9.5pt; margin-top: 1px; }
+.cv-item ul { margin: 5px 0 0; padding-left: 16px; }
+.cv-item li { margin-bottom: 2px; }
+.cv-pill { display: inline-block; background: #F1F5F9; border: 1px solid var(--rule); color: var(--navy); border-radius: 999px; padding: 3px 11px; font-size: 9pt; font-weight: 600; margin: 0 6px 6px 0; }
+.cv-lang { display: inline-block; margin-right: 26px; }
+.cv-meta { color: #64748B; }
+
+/* marca de água de pré-visualização */
+.cv-watermark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  background-image: repeating-linear-gradient(
+    -30deg,
+    transparent 0,
+    transparent 90px,
+    rgba(220, 38, 38, 0.05) 90px,
+    rgba(220, 38, 38, 0.05) 180px
+  );
+}
+.cv-watermark span {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  white-space: nowrap;
+  color: rgba(220, 38, 38, 0.16);
+  font-weight: 800;
+  font-size: 16pt;
+  letter-spacing: 1px;
+  text-align: center;
+  line-height: 3.2;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* escala em ecrãs pequenos (zoom mantém o fluxo do layout) */
+.cv-scale-wrap { overflow: auto; }
+.cv-zoom { zoom: 0.46; }
+@media (min-width: 640px) { .cv-zoom { zoom: 0.6; } }
+@media (min-width: 1024px) { .cv-zoom { zoom: 0.56; } }
+@media (min-width: 1280px) { .cv-zoom { zoom: 0.66; } }
+
+@media print {
+  body * { visibility: hidden; }
+  .cv-sheet, .cv-sheet * { visibility: visible; }
+  .cv-sheet { position: absolute; left: 0; top: 0; box-shadow: none; }
+}
