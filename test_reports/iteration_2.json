@@ -1,0 +1,25 @@
+{
+  "summary": "Focused regression on two new features: (1) smart profession search with 'did you mean' suggestions; (2) Referências section with consent gate. Backend pytest 6/6 PASS (test_new_features.py). Frontend Playwright validated all required testids and interactions. Admin payment settings NOT touched (published flag not modified).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_new_features.py",
+    "/app/test_reports/pytest/new_features.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "sanitize_references (server.py:152) correctly nukes name/phone/email/company/role when consent is false — defensive write path on both POST and PUT drafts. Good.",
+    "list_professions (server.py:228) only emits suggestions when exact match list is empty — matches spec; threshold 0.65 in _similar_professions returns 'Electricista' for 'electrisista' (and also 'Técnico de Electrónica' due to token overlap) — acceptable.",
+    "ReferencesForm hides inputs behind consent checkbox (ref-locked-N visible before, inputs removed from DOM) — ref-name-0 is absent until consent, matching spec. Unchecking clears data (verified: name/phone become empty on re-check).",
+    "Review page (/rever/:token) renders toggle-references only when refs have at least one item with data (not visible when empty), and does not block Finalizar — the Finalizar validation only requires personal name + phone.",
+    "No ObjectId leaks observed; drafts endpoints already project {_id:0}."
+  ],
+  "updated_files": ["/app/backend/tests/test_new_features.py (new)"],
+  "success_rate": {"backend": "100% (6/6 new feature tests)", "frontend": "100% (all required testids and behaviors validated)"},
+  "test_credentials": "Admin: pesselajustino7@gmail.com / KurrikuluPro2026! (not used — only candidate flow tested). Payment published flag NOT changed.",
+  "seed_data_creation": "Created 1 draft during Playwright test and DELETED it after (/api/drafts/lN8yqQs6ezRxuUy9cRMw9q1EZjJqRJlY -> ok:true).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Pathway testids in /criar are 'choose-pathway-<id>' not 'pathway-<id>'. For references autosave, wait >=3s after fill before navigating to /rever otherwise debounced PUT is cancelled. GET /api/professions?search= returns {professions, suggestions, families}; suggestions non-empty ONLY when professions is empty.",
+  "rca of the issue": "No bugs found in this iteration."
+}

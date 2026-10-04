@@ -36,9 +36,13 @@ Aplicação web completa para pessoas em Angola criarem currículos profissionai
 - Estado do pedido; PDF limpo (WeasyPrint) só após aprovação (403 antes).
 - Admin: login protegido, lista/filtros, detalhe + visualização privada do comprovativo, aprovar/rejeitar com motivo, auditoria, definições (publicar pagamento), gestão de profissões.
 
+## Implementado 2026-06 (iteration_2: backend 6/6, frontend OK)
+- Secção Referências (separador em todos os percursos, opcional): modos "não incluir" / "disponíveis mediante pedido" / "lista". Dados só editáveis após caixa de consentimento; backend `sanitize_references` apaga dados sem consentimento; preview + PDF só mostram referências com `consent=true`. Toggle em Rever.
+- Pesquisa inteligente de profissões: `GET /api/professions?search=` normaliza acentos e, sem correspondência exacta, devolve `suggestions` (difflib, sem IA). UI mostra "Não encontrámos… Talvez queira dizer:" com chips (nunca selecciona automaticamente).
+- Dados de pagamento continuam ocultos (published=false) — o proprietário publica manualmente no painel Definições.
+
 ## Backlog / próximos (P1/P2)
-- P1: Secção Referências dedicada com consentimento; links profissionais nos Dados pessoais.
-- P1: Correspondência próxima na pesquisa de profissões (sugestões quando não há correspondência exacta).
+- P1: Links profissionais nos Dados pessoais.
 - P2: Retoma do rascunho por link/código entre dispositivos (token com validade).
 - P2: Fotografia opcional (armazenamento privado) — desligada por defeito.
 - P2: PayPal (só com conta do proprietário); SEO (sitemap/robots); e-mail de confirmação (Resend).
