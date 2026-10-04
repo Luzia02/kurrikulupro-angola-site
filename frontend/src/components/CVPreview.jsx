@@ -1,4 +1,5 @@
 import React from "react";
+import { PROFILE_EXAMPLE } from "./editor/SectionForms";
 
 const EDU_STATUS = { a_frequentar: "Em curso", concluido: "Concluída", interrompido: "Interrompida" };
 
@@ -63,6 +64,13 @@ export default function CVPreview({ content, watermark = true }) {
       {shown("profile") && tem(profile) && (
         <Section title="Perfil Profissional">
           <p className="cv-para">{profile}</p>
+        </Section>
+      )}
+      {shown("profile") && !tem(profile) && watermark && (
+        <Section title="Perfil Profissional">
+          <p className="cv-para" style={{ color: "#94A3B8", fontStyle: "italic" }} data-testid="cv-profile-example">
+            [Exemplo fictício — será substituído pelo seu perfil] {PROFILE_EXAMPLE}
+          </p>
         </Section>
       )}
 

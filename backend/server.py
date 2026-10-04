@@ -643,13 +643,16 @@ async def startup():
     await db.resume_codes.create_index("code", unique=True)
     await db.resume_codes.create_index("expires_at", expireAfterSeconds=0)
 
-    # seed admin
+    # seed admin (password only via environment; never in code)
     email = os.environ["ADMIN_EMAIL"].strip().lower()
-    pwd = os.environ["ADMIN_PASSWORD"]
+    pwd = os.environ.get("ADMIN_PASSWORD", "")
+    await db.admins.delete_many({"email": {"$ne": email}, "role": "admin", "seeded": True})
     existing = await db.admins.find_one({"email": email})
-    if not existing:
+    if not pwd:
+        logger.warning("ADMIN_PASSWORD não definida: o acesso ao painel fica indisponível até ser configurada.")
+    elif not existing:
         await db.admins.insert_one({"email": email, "password_hash": hash_password(pwd),
-                                    "name": "Administrador", "role": "admin", "created_at": now_iso()})
+                                    "name": "Administrador", "role": "admin", "seeded": True, "created_at": now_iso()})
         logger.info("Admin seed criado.")
     elif not verify_password(pwd, existing["password_hash"]):
         await db.admins.update_one({"email": email}, {"$set": {"password_hash": hash_password(pwd)}})

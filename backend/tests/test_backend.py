@@ -12,7 +12,7 @@ BASE = os.environ["REACT_APP_BACKEND_URL"].rstrip("/") if os.environ.get("REACT_
 API = f"{BASE}/api"
 
 ADMIN_EMAIL = "pesselajustino7@gmail.com"
-ADMIN_PASSWORD = "KurrikuluPro2026!"
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
 
 
 @pytest.fixture(scope="session")

@@ -47,7 +47,10 @@ Aplicação web completa para pessoas em Angola criarem currículos profissionai
 - Partilhar por WhatsApp (pedido aprovado): abre `wa.me/?text=` com mensagem neutra; candidato anexa o PDF manualmente. Nada enviado automaticamente.
 
 ## Acesso administrador (sem credenciais no código)
-- Admin é semeado no arranque a partir de `backend/.env`: `ADMIN_EMAIL` e `ADMIN_PASSWORD` (hash bcrypt na BD; se a password do .env mudar, o hash é actualizado). Para alterar: editar as duas variáveis no .env (preview) ou nos Secrets de produção e reiniciar o backend. Login em `/admin/login`.
+- Admin inicial: `ADMIN_EMAIL=luziapessela744@gmail.com` (backend/.env). `ADMIN_PASSWORD` NÃO está em nenhum ficheiro: enquanto vazia, o seed é saltado (warning no log) e o login devolve 401. O proprietário define-a via mecanismo seguro (Secrets/env) e reinicia o backend; o hash bcrypt é criado/actualizado no arranque. Contas admin semeadas com outro e-mail são removidas no arranque.
+
+## Implementado 2026-06 (iteration_4 — self-test)
+- Perfil: exemplo fictício (texto do proprietário) mostrado apenas como placeholder no formulário e na pré-visualização quando não há texto (nunca aplicado nem exportado). Gerador reescrito: 3–4 frases a partir de formação/experiência/competências confirmadas/área de interesse; estudantes → formação, projectos, cursos; dados em falta → texto mais curto. Fluxo "Editar perfil" com Guardar/Cancelar; `profile.suggested` guarda a sugestão; "Restaurar sugestão inicial" só por acção explícita; edição nunca sobrescrita automaticamente.
 
 ## Backlog / próximos (P1/P2)
 - P2: Retoma do rascunho — DONE (código + PIN).

@@ -65,9 +65,14 @@ export function PersonalForm({ content, set }) {
 }
 
 // ---------------- Perfil
+export const PROFILE_EXAMPLE = "Profissional com experiência em atendimento ao público e apoio às actividades diárias de uma loja, incluindo esclarecimento de dúvidas, organização de produtos e colaboração com a equipa. Comunica com clareza, demonstra sentido de responsabilidade e organiza o trabalho com atenção. Tem interesse em oportunidades de atendimento ou apoio administrativo, onde possa aplicar a experiência que possui. Procura continuar a desenvolver as suas competências e crescer profissionalmente.";
+
 export function ProfileForm({ content, set }) {
   const prof = content.profile;
   const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+
   async function generate() {
     if (prof.edited && prof.text) {
       if (!window.confirm("Já editou o perfil manualmente. Gerar uma nova sugestão vai substituir o texto actual. Continuar?")) return;
@@ -75,27 +80,66 @@ export function ProfileForm({ content, set }) {
     setLoading(true);
     try {
       const { data } = await api.post("/profile/generate", { content });
-      set({ ...content, profile: { text: data.text, edited: false, generated: true } });
-      toast.success("Sugestão de perfil gerada.");
+      set({ ...content, profile: { text: data.text, suggested: data.text, edited: false, generated: true } });
+      setEditing(false);
+      toast.success("Sugestão de perfil gerada a partir dos seus dados.");
     } catch (e) {
       toast.error("Não foi possível gerar o perfil.");
     } finally {
       setLoading(false);
     }
   }
+  const startEdit = () => { setDraft(prof.text || ""); setEditing(true); };
+  const save = () => {
+    const txt = draft.trim();
+    set({ ...content, profile: { ...prof, text: txt, edited: txt !== (prof.suggested || "") } });
+    setEditing(false);
+    toast.success("Perfil guardado.");
+  };
+  const restore = () => {
+    if (!window.confirm("Restaurar a sugestão inicial? O texto editado será substituído.")) return;
+    set({ ...content, profile: { ...prof, text: prof.suggested, edited: false } });
+    setEditing(false);
+  };
+
   return (
     <div className="space-y-3">
-      <p className="text-sm text-slate-600">O perfil é escrito a partir das suas respostas verdadeiras. Pode mantê-lo ou editar. Se editar, a sua versão não é substituída automaticamente.</p>
-      <TextArea label="Perfil profissional" value={prof.text} rows={5} testid="input-profile"
-        onChange={(v) => set({ ...content, profile: { ...prof, text: v, edited: true } })}
-        placeholder="Clique em “Gerar sugestão” depois de preencher a formação e a experiência." />
-      <div className="flex flex-wrap gap-3">
-        <button data-testid="generate-profile-btn" onClick={generate} disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#2563EB] text-white text-sm font-semibold disabled:opacity-60">
-          <Sparkles className="w-4 h-4" /> {prof.generated ? "Regenerar sugestão" : "Gerar sugestão"}
-        </button>
-        {prof.edited && <span className="flex items-center gap-1 text-xs text-[#D97706]"><Pencil className="w-3 h-3" /> Editado manualmente</span>}
-      </div>
+      <p className="text-sm text-slate-600">O perfil é escrito a partir das suas respostas verdadeiras (formação, experiência, competências confirmadas e área de interesse). Pode mantê-lo ou editar — a sua versão nunca é substituída automaticamente.</p>
+      {!prof.text && !editing && (
+        <div className="rounded-xl bg-slate-50 border border-dashed border-slate-300 p-4" data-testid="profile-example">
+          <p className="text-xs font-semibold text-slate-500 uppercase">Exemplo fictício (não é o seu texto)</p>
+          <p className="text-sm text-slate-500 italic mt-1">{PROFILE_EXAMPLE}</p>
+        </div>
+      )}
+      {editing ? (
+        <div className="space-y-2">
+          <TextArea label="Editar perfil" value={draft} rows={6} testid="input-profile" onChange={setDraft} placeholder="Escreva o seu perfil em 3 a 4 frases verdadeiras." />
+          <div className="flex gap-2">
+            <button data-testid="profile-save" onClick={save} className="px-4 py-2 rounded-full bg-[#1C2D42] text-white text-sm font-semibold">Guardar</button>
+            <button data-testid="profile-cancel" onClick={() => setEditing(false)} className="px-4 py-2 rounded-full border border-slate-300 text-slate-600 text-sm font-semibold">Cancelar</button>
+          </div>
+        </div>
+      ) : prof.text ? (
+        <div className="rounded-xl border border-slate-200 bg-white p-4" data-testid="profile-current">
+          <p className="text-sm text-slate-800 whitespace-pre-line">{prof.text}</p>
+        </div>
+      ) : null}
+      {!editing && (
+        <div className="flex flex-wrap gap-3 items-center">
+          <button data-testid="generate-profile-btn" onClick={generate} disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#2563EB] text-white text-sm font-semibold disabled:opacity-60">
+            <Sparkles className="w-4 h-4" /> {prof.generated ? "Regenerar sugestão" : "Gerar sugestão"}
+          </button>
+          <button data-testid="profile-edit" onClick={startEdit}
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-300 text-[#1C2D42] text-sm font-semibold">
+            <Pencil className="w-4 h-4" /> {prof.text ? "Editar perfil" : "Escrever o meu perfil"}
+          </button>
+          {prof.edited && prof.suggested && (
+            <button data-testid="profile-restore" onClick={restore} className="text-sm text-[#2563EB] font-semibold hover:underline">Restaurar sugestão inicial</button>
+          )}
+          {prof.edited && <span className="flex items-center gap-1 text-xs text-[#D97706]"><Pencil className="w-3 h-3" /> Editado manualmente</span>}
+        </div>
+      )}
     </div>
   );
 }
