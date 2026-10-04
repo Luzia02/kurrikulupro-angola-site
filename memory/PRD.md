@@ -41,9 +41,16 @@ Aplicação web completa para pessoas em Angola criarem currículos profissionai
 - Pesquisa inteligente de profissões: `GET /api/professions?search=` normaliza acentos e, sem correspondência exacta, devolve `suggestions` (difflib, sem IA). UI mostra "Não encontrámos… Talvez queira dizer:" com chips (nunca selecciona automaticamente).
 - Dados de pagamento continuam ocultos (published=false) — o proprietário publica manualmente no painel Definições.
 
+## Implementado 2026-06 (iteration_3: backend 6/6, frontend OK)
+- Links profissionais (LinkedIn, portefólio) nos Dados pessoais → linha de contactos (preview + PDF, sem "https://www.").
+- Retomar rascunho noutro telemóvel: `POST /drafts/{token}/resume-code {pin}` gera KP-XXXXXX (30 dias, PIN bcrypt), `GET/DELETE` do código, `POST /drafts/resume {code,pin}` (5 falhas → bloqueio 15 min; TTL em `resume_codes`). UI: botão "Continuar noutro telemóvel" no editor + página `/retomar` + link na Home. Sem conta; sem acesso ao admin.
+- Partilhar por WhatsApp (pedido aprovado): abre `wa.me/?text=` com mensagem neutra; candidato anexa o PDF manualmente. Nada enviado automaticamente.
+
+## Acesso administrador (sem credenciais no código)
+- Admin é semeado no arranque a partir de `backend/.env`: `ADMIN_EMAIL` e `ADMIN_PASSWORD` (hash bcrypt na BD; se a password do .env mudar, o hash é actualizado). Para alterar: editar as duas variáveis no .env (preview) ou nos Secrets de produção e reiniciar o backend. Login em `/admin/login`.
+
 ## Backlog / próximos (P1/P2)
-- P1: Links profissionais nos Dados pessoais.
-- P2: Retoma do rascunho por link/código entre dispositivos (token com validade).
+- P2: Retoma do rascunho — DONE (código + PIN).
 - P2: Fotografia opcional (armazenamento privado) — desligada por defeito.
 - P2: PayPal (só com conta do proprietário); SEO (sitemap/robots); e-mail de confirmação (Resend).
 

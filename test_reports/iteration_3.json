@@ -1,0 +1,26 @@
+{
+  "summary": "Focused regression on 3 new features: (1) LinkedIn/portfolio inputs in Dados pessoais rendered in cv-preview contact line with https://www. stripped; (2) Resume rascunho on another phone via KP-XXXXXX code + 4-digit PIN (create/get/revoke, resume-with-wrong-pin shows generic 401, resume-with-correct-pin navigates back to same draft, revoked code is unusable); (3) WhatsApp share button on APPROVED order page uses wa.me/?text=... with text-only (no phone, no http link). Backend: 6/6 new pytest cases (test_resume_code.py) passed. Frontend: full Playwright flow passed. Admin payment settings/published flag NOT touched.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_resume_code.py",
+    "/app/test_reports/pytest/resume_code.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Resume code endpoints (server.py:219-280) implement correct generic 401 for wrong code+wrong pin, 400 for invalid pin format, 410 for expired, 429 on 5th wrong attempt with 15-min lockout. attempts counter reset to 0 at lockout and after successful resume. Good defensive design.",
+    "resume_codes TTL index on expires_at (server.py:644) will auto-purge expired codes.",
+    "DELETE /api/drafts/{token} also deletes associated resume_codes (server.py:205) — correct cascade.",
+    "CVPreview.shortUrl strips https?://(www\\.)? and trailing slash; applied only to linkedin/portfolio (not phone/email). Correct per spec.",
+    "OrderStatus.jsx WA_TEXT (line 8) is text-only cordial Portuguese message; href uses wa.me/?text=encodeURIComponent(WA_TEXT) — no phone number embedded in URL and no http link in text body. Spec met.",
+    "ResumeCodeDialog correctly fetches existing code on mount (GET), shows create vs existing views, and copy button writes to clipboard. One minor UX note: when PIN input is >4 chars, button is disabled (good)."
+  ],
+  "updated_files": ["/app/backend/tests/test_resume_code.py (new)"],
+  "success_rate": {"backend": "100% (6/6 resume-code tests)", "frontend": "100% (all 3 new feature flows validated end-to-end)"},
+  "test_credentials": "Admin: pesselajustino7@gmail.com / KurrikuluPro2026! (used to approve a test order via POST /api/admin/orders/{id}/approve). Payment published flag NOT changed.",
+  "seed_data_creation": "Created and DELETED: 2 drafts (via DELETE /api/drafts/{token}), 1 order KP-VO7QSY (via direct MongoDB delete since there's no admin DELETE endpoint), 1 audit_log entry for the approve. No residual test data in DB.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Resume-code flow: dialog testids are resume-code-open (editor header), resume-code-dialog, resume-pin-input, resume-code-create, resume-code-value (shows KP-XXXXXX, exists only in 'existing' view), resume-code-revoke, resume-code-close. /retomar page testids: resume-code-input, resume-pin, resume-submit, resume-error. Error message on wrong/revoked/unknown code is the GENERIC 'Código ou PIN incorrectos.' (401). Admin DELETE for orders does NOT exist — cleanup requires direct Mongo. Admin API has no public DELETE for drafts either — use /api/drafts/{token} public endpoint. WhatsApp text constant is in /app/frontend/src/pages/OrderStatus.jsx:8.",
+  "rca of the issue": "No bugs found in this iteration."
+}
